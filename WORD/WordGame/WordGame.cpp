@@ -1,5 +1,8 @@
-﻿#undef UNICODE
+﻿//打字游戏  1.1
+
+#undef UNICODE
 #define _CRT_SECURE_NO_WARNINGS
+
 #include <iostream>
 #include <easyx.h>
 #include <vector>
@@ -129,11 +132,12 @@ class WordGame {
 	  int key = _getch();
 	  for (list<Word>::iterator i = words.begin(); i != words.end(); i++)
 	  {
-		if (i->word == (char)key)
+		if (i->word == key)
 		{
-		  words.erase(i++);
+		  words.erase(i);
 		  score++;
 		  level = _levelUp();
+		  return;
 		}
 	  }
 	  score=score-1<0?score:score-1;
