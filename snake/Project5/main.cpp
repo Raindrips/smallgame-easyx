@@ -123,19 +123,19 @@ void control()
 	dir = UP;
   }
   //右方向建按下
-  if ((GetAsyncKeyState(VK_RIGHT) || GetAsyncKeyState('D'))
+  else if ((GetAsyncKeyState(VK_RIGHT) || GetAsyncKeyState('D'))
 	&& dir != LEFT)
   {
 	dir = RIGHT;
   }
   //下方向建按下
-  if ((GetAsyncKeyState(VK_DOWN) || GetAsyncKeyState('S'))
+  else if ((GetAsyncKeyState(VK_DOWN) || GetAsyncKeyState('S'))
 	&& dir != UP)
   {
 	dir = DOWN;
   }
   //左方向建按下
-  if ((GetAsyncKeyState(VK_LEFT) || GetAsyncKeyState('A'))
+  else if ((GetAsyncKeyState(VK_LEFT) || GetAsyncKeyState('A'))
 	&& dir != RIGHT)
   {
 	dir = LEFT;
@@ -174,9 +174,8 @@ bool isGmaeover()
 	}
 	t = t->next;
   }
+  
   return false;
-
-
 }
 
 void draw()
