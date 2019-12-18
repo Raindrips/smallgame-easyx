@@ -143,7 +143,9 @@ csx
 AppPackages/
 
 # 隐藏文件
- .vs/
+ .vs/*
+ *.db
+ *.opendb
 
 # Others
 sql/
@@ -187,4 +189,4 @@ $RECYCLE.BIN/
 
 # Mac crap
 .DS_Store
-*.db
+
