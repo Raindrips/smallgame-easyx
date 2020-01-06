@@ -1,6 +1,13 @@
 # smallgame-easyx
 用easyx图形库制作的一些小游戏
 
+用到的运行环境
+--------------
+1. visual studio 2019 (IDE)
+2. [图形库](https://easyx.cn/)
+
+
+
 现在的游戏有:
 - 打字游戏
 - 飞机大战

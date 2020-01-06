@@ -143,9 +143,14 @@ csx
 AppPackages/
 
 # 隐藏文件
+<<<<<<< HEAD
  .vs/*
  *.db
  *.opendb
+ 
+=======
+ .vs/
+>>>>>>> parent of fe932b9... 添加了新的过滤规则
 
 # Others
 sql/
@@ -189,4 +194,4 @@ $RECYCLE.BIN/
 
 # Mac crap
 .DS_Store
-
+*.db
