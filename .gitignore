@@ -195,3 +195,6 @@ $RECYCLE.BIN/
 # Mac crap
 .DS_Store
 *.db
+
+# vs code
+.vscode/c_cpp_properties.json
