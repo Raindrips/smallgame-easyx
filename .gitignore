@@ -143,14 +143,12 @@ csx
 AppPackages/
 
 # 隐藏文件
-<<<<<<< HEAD
- .vs/*
- *.db
- *.opendb
- 
-=======
- .vs/
->>>>>>> parent of fe932b9... 添加了新的过滤规则
+.vs
+*.vs*
+.vs/
+*.db
+*.opendb
+
 
 # Others
 sql/
@@ -198,3 +196,9 @@ $RECYCLE.BIN/
 
 # vs code
 .vscode/c_cpp_properties.json
+
+## coustom rule
+*TODO*
+out/
+
+*.rar
