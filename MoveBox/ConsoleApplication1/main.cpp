@@ -2,33 +2,33 @@
 #include "stdafx.h"
 #include <easyx.h> 
 #include <conio.h>
-#include <stack>  //STL Õ»   ÏÈ½øºó³ö  ºó½øÏÈ³ö
+#include <stack>  //STL æ ˆ   å…ˆè¿›åå‡º  åè¿›å…ˆå‡º
 #include <list>
 #include <iostream>
 
-// https://easyx.cn/  Í¼ĞÎ¿âÏÂÔØµØÖ·   
+// https://easyx.cn/  å›¾å½¢åº“ä¸‹è½½åœ°å€   
 #include <vector>
 #include "LoadLevels.h"
 using namespace std;
 
 
 
-//ÍÆÏä×ÓÓÎÏ·
+//æ¨ç®±å­æ¸¸æˆ
 class MoveBox
 {
 protected:
-	Level level;   //¹Ø¿¨
-	int wid, hei;  //ÆÁÄ»µÄ¿í¸ß
-	int sizeW, sizeH;  //Ã¿¸öÍ¼Æ¬µÄ¿íºÍ¸ß
-	vector<IMAGE> images; //´æ·ÅÍ¼ÏñµÄ¶¯Ì¬Êı×é
+	Level level;   //å…³å¡
+	int wid, hei;  //å±å¹•çš„å®½é«˜
+	int sizeW, sizeH;  //æ¯ä¸ªå›¾ç‰‡çš„å®½å’Œé«˜
+	vector<IMAGE> images; //å­˜æ”¾å›¾åƒçš„åŠ¨æ€æ•°ç»„
 
-	LevelPack *pak; //ËùÓĞµÄ¹Ø¿¨
+	LevelPack *pak; //æ‰€æœ‰çš„å…³å¡
 
-	stack<Level> history;  //ÓÃÕ»´¢´æÃ¿´Î×ß¹ıµÄÂ·
+	stack<Level> history;  //ç”¨æ ˆå‚¨å­˜æ¯æ¬¡èµ°è¿‡çš„è·¯
 
-	int step = 0;  //µÚ¼¸¹Ø
+	int step = 0;  //ç¬¬å‡ å…³
 
-	//´ÓÎÄ¼şÖĞ¼ÓÔØÍ¼Æ¬
+	//ä»æ–‡ä»¶ä¸­åŠ è½½å›¾ç‰‡
 	void getRes()
 	{
 		images.resize(6);
@@ -53,16 +53,16 @@ protected:
 			{
 				switch (level.s[i][j])
 				{
-				case 1:  //Ç½
+				case 1:  //å¢™
 					putimage(j*sizeW, i*sizeH, &images[4]);
 					break;
-				case 2:  //Ïä×Ó
+				case 2:  //ç®±å­
 					putimage(j*sizeW, i*sizeH, &images[1]);
 					break;
-				case 4: //Ä¿µÄµØ
+				case 4: //ç›®çš„åœ°
 					putimage(j*sizeW, i*sizeH, &images[5]);
 					break;
-				case 6: //Ïä×Ó+Ä¿µÄµØ
+				case 6: //ç®±å­+ç›®çš„åœ°
 					putimage(j*sizeW, i*sizeH, &images[2]);
 					break;
 				}
@@ -73,12 +73,12 @@ protected:
 		EndBatchDraw();
 	}
 
-	//ÈËÎïÒÆ¶¯
+	//äººç‰©ç§»åŠ¨
 	void move(int mx, int my)
 	{
 		int newX = level.x + mx;
 		int newY = level.y + my;
-		//ÅĞ¶ÏÊÇ·ñ¿ÉÒÔÒÆ¶¯
+		//åˆ¤æ–­æ˜¯å¦å¯ä»¥ç§»åŠ¨
 		if (newX < 0 || newX >= level.s.size() ||
 			newY < 0 || newY >= level.s.size() ||
 			level.s[newY][newX] == 1)
@@ -104,14 +104,14 @@ protected:
 				level.x = newX;
 				level.y = newY;
 				//0B -> 10B  100B -> 110B  
-				//Ïä×ÓÎ» ÖÃ0
+				//ç®±å­ä½ ç½®0
 				level.s[newY][newX] &= ~(size_t)(1 << 1);
-				//Ïä×ÓÎ» ÖÃ1
+				//ç®±å­ä½ ç½®1
 				level.s[toY][toX] |= 1 << 1;
 			}
 		}
 	}
-	//ÓÎÏ·¿ØÖÆ
+	//æ¸¸æˆæ§åˆ¶
 	void control()
 	{
 		int key = _getch();
@@ -150,7 +150,7 @@ protected:
 		move(mx, my);
 	}
 
-	//ÅĞ¶ÏÊÇ·ñÍê³ÉÒ»¾Ö
+	//åˆ¤æ–­æ˜¯å¦å®Œæˆä¸€å±€
 	bool isWin()
 	{
 		for (size_t i = 0; i < level.s.size(); i++)
@@ -165,9 +165,9 @@ protected:
 		}
 		return true;
 	}
-	//0:¿ÉÒÔ×ßµÄÂ·  1:Ç½  2(1>>1 10B):Ïä×Ó		
-	//4(1>>2 100B)Ä¿µÄµØ
-	//2+4 110B:Ä¿µÄµØºÍÏä×ÓÖØºÏ
+	//0:å¯ä»¥èµ°çš„è·¯  1:å¢™  2(1>>1 10B):ç®±å­		
+	//4(1>>2 100B)ç›®çš„åœ°
+	//2+4 110B:ç›®çš„åœ°å’Œç®±å­é‡åˆ
 	void init()
 	{
 
@@ -205,7 +205,7 @@ public:
 			if (isWin())
 			{
 				draw();
-				MessageBox(GetForegroundWindow(), _T("¹§Ï²¹ı¹Ø"), _T(""), MB_OK);
+				MessageBox(GetForegroundWindow(), _T("æ­å–œè¿‡å…³"), _T(""), MB_OK);
 				step++;
 				init();
 			}
