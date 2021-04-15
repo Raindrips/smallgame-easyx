@@ -1,34 +1,30 @@
-#include <stdio.h>
+ï»¿#include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <easyx.h> //Í¼ĞÎ¿â
+#include <easyx.h> //å›¾å½¢åº“
 
-//½ñÌì½²Ì°³ÔÉßÓÎÏ·
+#define MALLOC(type) ((type*)malloc(sizeof(type)));
 
-//8µã×¼Ê±ÉÏ¿Î
-
-#define MALLOC(type) (type*)malloc(sizeof(type));
-
-//×ø±ê½á¹¹Ìå
+//åæ ‡ç»“æ„ä½“
 struct Position
 {
 	int x;
 	int y;
 };
 
-//Éß½Úµã
-struct Snake
+//è›‡èŠ‚ç‚¹
+struct Node
 {
 	Position pos;
-	Snake *n;
+	Node* n;
 };
 
 enum Direction
 {
-	UP,		//ÉÏ
-	RIGHT,  //ÓÒ
-	DOWN,   //ÏÂ
-	LEFT	//×ó
+	UP,		//ä¸Š
+	RIGHT,  //å³
+	DOWN,   //ä¸‹
+	LEFT	//å·¦
 };
 
 enum GameMode
@@ -39,21 +35,21 @@ enum GameMode
 GameMode mode;
 
 Direction dir, recvDir;
-int wid, hei; //¿í¶ÈºÍ¸ß¶È
+int wid, hei; //å®½åº¦å’Œé«˜åº¦
 int size;
 int maxX, maxY;
 
-Snake *head = NULL;		//Í·½Úµã
-Snake *tail = NULL;		//Î²½Úµã
+Node* head = NULL;		//å¤´èŠ‚ç‚¹
+Node* tail = NULL;		//å°¾èŠ‚ç‚¹
 
-Position food;    //Ê³Îï×ø±ê
+Position food;    //é£Ÿç‰©åæ ‡
 
-Snake* spawnNewBody()  //ctrl+r ctrl+r  ´úÂëÖØ¹¹
+Node* spawnNewBody()  //ctrl+r ctrl+r  ä»£ç é‡æ„
 {
-	Snake *t = MALLOC(Snake);
+	Node* t = MALLOC(Node);
 	if (t == NULL)
 	{
-		printf("ÓÎÏ·³õÊ¼»¯Ê§°Ü:ÄÚ´æ²»×ã\n");
+		printf("æ¸¸æˆåˆå§‹åŒ–å¤±è´¥:å†…å­˜ä¸è¶³\n");
 		getchar();
 		exit(1);
 	}
@@ -67,10 +63,10 @@ void spawnNewFood()
 {
 	food.x = rand() % maxX;
 	food.y = rand() % maxY;
-	Snake *t = tail;
+	Node* t = tail;
 	while (t->n)
 	{
-		if (food.x == t->pos.x&&food.y == t->pos.y)
+		if (food.x == t->pos.x && food.y == t->pos.y)
 		{
 			spawnNewFood();
 			return;
@@ -81,7 +77,7 @@ void spawnNewFood()
 
 bool isEatfood()
 {
-	if (head->pos.x == food.x&&head->pos.y == food.y)
+	if (head->pos.x == food.x && head->pos.y == food.y)
 	{
 		return true;
 	}
@@ -90,10 +86,10 @@ bool isEatfood()
 
 bool isGameOver()
 {
-	Snake *t = tail;
-	while (t != head&&t->n->n) //²»»áÅĞ¶ÏÍ·½Úµã
+	Node* t = tail;
+	while (t != head && t->n->n) //ä¸ä¼šåˆ¤æ–­å¤´èŠ‚ç‚¹
 	{
-		if (head->pos.x == t->pos.x&&head->pos.y == t->pos.y)
+		if (head->pos.x == t->pos.x && head->pos.y == t->pos.y)
 		{
 			return true;
 		}
@@ -123,16 +119,16 @@ bool isGameOver()
 }
 
 
-//³õÊ¼»¯ÓÎÏ·
+//åˆå§‹åŒ–æ¸¸æˆ
 void init_game()
 {
 	wid = 640; hei = 480;
-	initgraph(wid, hei, SHOWCONSOLE);
+	initgraph(wid, hei);
 	size = 20;
 	maxX = wid / size;
 	maxY = hei / size;
 	tail = spawnNewBody();
-	Snake *t = tail;
+	Node* t = tail;
 	Position pos{ 5, 3 };
 	for (int i = 0; i < 2; i++)
 	{
@@ -145,9 +141,9 @@ void init_game()
 	head = t;
 	srand(time(NULL));
 	dir = RIGHT;
-	int change = MessageBox(GetForegroundWindow(), _TEXT("Ê¹ÓÃÉú´æÄ£Ê½?"), _TEXT("Ñ¡ÔñÄ£Ê½"), MB_YESNO);
+	int change = MessageBox(GetForegroundWindow(), _TEXT("ä½¿ç”¨ç”Ÿå­˜æ¨¡å¼?"), _TEXT("é€‰æ‹©æ¨¡å¼"), MB_YESNO);
 	printf("\n\n%d\n\n", change);
-	if (change==6)
+	if (change == 6)
 		mode = death;
 	else
 		mode = infinite;
@@ -156,8 +152,8 @@ void init_game()
 
 void snake_move()
 {
-	//Î²°ÍÏòÇ°ÒÆ¶¯
-	Snake *t = tail;
+	//å°¾å·´å‘å‰ç§»åŠ¨
+	Node* t = tail;
 	while (t->n)
 	{
 		t->pos = t->n->pos;
@@ -185,75 +181,69 @@ void snake_move()
 
 }
 
-//ÓÎÏ·¿ØÖÆº¯Êı
+//æ¸¸æˆæ§åˆ¶å‡½æ•°
 void control()
 {
-	if (GetAsyncKeyState(VK_UP))
+	if (GetAsyncKeyState(VK_UP) || GetAsyncKeyState('W'))
 	{
-		if (recvDir != DOWN)
-		{
+		if (recvDir != DOWN) {
 			dir = UP;
 		}
-
 	}
-	if (GetAsyncKeyState(VK_RIGHT))
+	if (GetAsyncKeyState(VK_RIGHT) || GetAsyncKeyState('D'))
 	{
-		if (recvDir != LEFT)
-		{
+		if (recvDir != LEFT) {
 			dir = RIGHT;
 		}
 	}
-	if (GetAsyncKeyState(VK_DOWN))
+	if (GetAsyncKeyState(VK_DOWN) || GetAsyncKeyState('S'))
 	{
-		if (recvDir != UP)
-		{
+		if (recvDir != UP) {
 			dir = DOWN;
 		}
 	}
-	if (GetAsyncKeyState(VK_LEFT))
+	if (GetAsyncKeyState(VK_LEFT) || GetAsyncKeyState('A'))
 	{
-		if (recvDir != RIGHT)
-		{
+		if (recvDir != RIGHT) {
 			dir = LEFT;
 		}
 	}
 }
 
 
-//»­Ğ¡·½¿é
+//ç”»å°æ–¹å—
 void Rect(int x, int y, COLORREF color)
 {
 	setfillcolor(color);
-	fillrectangle(x*size, y*size, x*size + size, y*size + size);
+	fillrectangle(x * size, y * size, x * size + size, y * size + size);
 }
 
 void draw()
 {
-	BeginBatchDraw(); //ÅúÁ¿»æÖÆ ·ÀÖ¹ÆÁÄ»³öÏÖÉÁ¶¯
+	BeginBatchDraw(); //æ‰¹é‡ç»˜åˆ¶ é˜²æ­¢å±å¹•å‡ºç°é—ªåŠ¨
 	cleardevice();
 
-	//»æÖÆÉß½Úµã
-	Snake *t = tail;
+	//ç»˜åˆ¶è›‡èŠ‚ç‚¹
+	Node* t = tail;
 	while (t)
 	{
 		Rect(t->pos.x, t->pos.y, RGB(0xff, 0x66, 0x33));
 		t = t->n;
 	}
-	//»æÖÆÊ³Îï
+	//ç»˜åˆ¶é£Ÿç‰©
 	Rect(food.x, food.y, RGB(0x33, 0x66, 0xff));
-	EndBatchDraw();//½áÊøÅúÁ¿»æÖÆ ÉÙÁË´Ëº¯Êı,Í¼ĞÎ½«ÎŞ·¨Êä³ö
+	EndBatchDraw();//ç»“æŸæ‰¹é‡ç»˜åˆ¶ å°‘äº†æ­¤å‡½æ•°,å›¾å½¢å°†æ— æ³•è¾“å‡º
 }
 
-//ÔËĞĞÓÎÏ·
+//è¿è¡Œæ¸¸æˆ
 void runGame()
 {
-	init_game();  //³õÊ¼»¯ÓÎÏ·
-	spawnNewFood();//Éú³ÉÊ³Îï
+	init_game();  //åˆå§‹åŒ–æ¸¸æˆ
+	spawnNewFood();//ç”Ÿæˆé£Ÿç‰©
 	while (true)
 	{
-		//repeat
-		snake_move();//ÉßÒÆ¶¯
-		control();//¿ØÖÆ
+		control();//æ§åˆ¶
+		snake_move();//è›‡ç§»åŠ¨
 		if (isEatfood())
 		{
 			head->n = spawnNewBody();
@@ -261,18 +251,18 @@ void runGame()
 			head->pos = food;
 			spawnNewFood();
 		}
-		draw(); //»æÖÆº¯ÊıµÄÎ»ÖÃ·ÅrepeatµÄÎ»ÖÃ ÓÎÏ·ÊÖ¸ĞµÄ±ä»¯
+		draw();
 		if (isGameOver())
 		{
-			MessageBox(GetForegroundWindow(), _TEXT("ÓÎÏ·½áÊø"), _TEXT(""), 0);
+			MessageBox(GetForegroundWindow(), _TEXT("æ¸¸æˆç»“æŸ"), _TEXT(""), 0);
 			return;
 		}
-		Sleep(100); 
+		Sleep(100);
 	}
 
 }
 
-//Ö÷º¯Êı
+//ä¸»å‡½æ•°
 int main()
 {
 	runGame();
